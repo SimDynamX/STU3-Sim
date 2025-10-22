@@ -1,4 +1,4 @@
-| [Rules & Info](https://github.com/SimDynamX/SpaceTeamsPro/discussions/106) | [SpaceTeamsROS (Here)](https://github.com/SimDynamX/SpaceTeamsROS) | [Q&A Discussions Category](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2025-mars-autonomous-rover-rally-q-a)
+| [Rules & Info](https://github.com/SimDynamX/SpaceTeamsPro/discussions/106) | [SpaceTeamsROS](https://github.com/SimDynamX/SpaceTeamsROS) | [Q&A Discussions Category](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2025-mars-autonomous-rover-rally-q-a)
 | ----- | ----- | ----- |
 
 # Space Teams University Competition 3 Sim Files - Mars Autonomous Rover Rally
