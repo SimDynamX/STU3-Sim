@@ -14,7 +14,7 @@
     "Systems": [
       {
         "Nametag": "ROSComm",
-        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_ROS_Comm.py",
+        "Source": "Local/Repos/STU3-Sim/STU3_ROS_Comm.py",
         "Type": "Python",
         "Active": true,
         "Inst_Parameters": {
@@ -27,7 +27,7 @@
       },
       {
 				"Nametag": "ROS_Telemetry",
-				"Source": "Local/Repos/aero-astro-STU3-Backend/ROS_Telemetry.py",
+				"Source": "Local/Repos/STU3-Sim/ROS_Telemetry.py",
 				"Type": "Python",
 				"Active": true,
 				"Inst_Parameters": {
@@ -39,7 +39,7 @@
       },
       {
 				"Nametag": "ImageSender",
-				"Source": "Local/Repos/aero-astro-STU3-Backend/ImageSender.py",
+				"Source": "Local/Repos/STU3-Sim/ImageSender.py",
 				"Type": "Python",
 				"Active": true,
 				"Inst_Parameters": {
@@ -63,7 +63,7 @@
       },
       {
         "Nametag": "RoverControl",
-        "Source": "Local/Repos/aero-astro-STU3-Backend/RoverControl.py",
+        "Source": "Local/Repos/STU3-Sim/RoverControl.py",
         "Type": "Python",
         "Active": false,
         "Inst_Parameters": {
@@ -74,7 +74,7 @@
       },
       {
         "Nametag": "EventHandler",
-        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_EventHandler.py",
+        "Source": "Local/Repos/STU3-Sim/STU3_EventHandler.py",
         "Type": "Python",
         "Active": true,
         "Inst_Parameters": {
@@ -91,7 +91,7 @@
       },
       {
         "Nametag": "WaypointScatter",
-        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_WaypointScatter.py",
+        "Source": "Local/Repos/STU3-Sim/STU3_WaypointScatter.py",
         "Type": "Python",
         "Active": true,
         "Inst_Parameters": {
@@ -127,7 +127,7 @@
       },
       {
         "Nametag": "RoverControl_Keyboard",
-        "Source": "Local/Repos/aero-astro-STU3-Backend/RoverControl_Keyboard.py",
+        "Source": "Local/Repos/STU3-Sim/RoverControl_Keyboard.py",
         "Type": "Python",
         "Active": false,
         "Inst_Parameters": {
