@@ -1,0 +1,805 @@
+{
+  "meta": {
+    "schemaversion_major": 2,
+    "schemaversion_minor": 0,
+    "schemaversion_patch": 0,
+    "Title": "Mars Autonomous Rover Rally",
+    "Description": "Simulation for the 2025 Mars Autonomous Rover Rally."
+  },
+  "IncludeSims": [
+    "Core/Compute_Server/packages/BaseSims/MarsAndMoons.simconf",
+		"Core/Compute_Server/packages/BaseSims/SolarSystem_InertialFrames.simconf"
+  ],
+  "SystemManager": {
+    "Systems": [
+      {
+        "Nametag": "ROSComm",
+        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_ROS_Comm.py",
+        "Type": "Python",
+        "Active": true,
+        "Inst_Parameters": {
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "MarsReferenceFrame": [ "EntityRef", "Mars" ],
+          "LocalFrame": [ "EntityRef", "LocalFrame" ],
+					"Camera": [ "EntityRef", "BuggyCamera" ],
+          "LoopFreqHz": 150.0
+        }
+      },
+      {
+				"Nametag": "ROS_Telemetry",
+				"Source": "Local/Repos/aero-astro-STU3-Backend/ROS_Telemetry.py",
+				"Type": "Python",
+				"Active": true,
+				"Inst_Parameters": {
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "MarsReferenceFrame": [ "EntityRef", "Mars" ],
+          "LocalFrame": [ "EntityRef", "LocalFrame" ],
+          "LoopFreqHz": 15.0
+				}
+      },
+      {
+				"Nametag": "ImageSender",
+				"Source": "Local/Repos/aero-astro-STU3-Backend/ImageSender.py",
+				"Type": "Python",
+				"Active": true,
+				"Inst_Parameters": {
+					"Camera": [ "EntityRef", "BuggyCamera" ],
+          "LoopFreqHz": 15.0,
+          "RGB_FreqHz": 15.0,
+          "Depth_FreqHz": 5.0,
+          "Filename": [ "string", "DEFAULT_IMAGES_DIR" ]
+				}
+      },
+      {
+				"Nametag": "MarsCamImageSave",
+        "Source": "Core/TestingTools/CameraImageSaving.py",
+        "Active": false,
+        "Type": "Python",
+        "Inst_Parameters": {
+          "CameraEn": [ "EntityRef", "BuggyCamera" ],
+          "StartCaptureID": [ "uint32", 1000000 ],
+          "Filename": [ "string", "DEFAULT_IMAGES_DIR" ]
+        }
+      },
+      {
+        "Nametag": "RoverControl",
+        "Source": "Local/Repos/aero-astro-STU3-Backend/RoverControl.py",
+        "Type": "Python",
+        "Active": false,
+        "Inst_Parameters": {
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "LoopFreqHz": 150.0,
+          "PreferJoystick": false
+        }
+      },
+      {
+        "Nametag": "EventHandler",
+        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_EventHandler.py",
+        "Type": "Python",
+        "Active": true,
+        "Inst_Parameters": {
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "Mars": [ "EntityRef", "Mars" ],
+          "ThirdPersonPawn": [ "EntityRef", "Spectator_Flatscreen" ],
+          "DrivingPawn": [ "EntityRef", "Spectator_Offroad" ],
+          "LoopFreqHz": 60.0,
+          "NumWaypoints": [ "int32", 20 ],
+          "MaxTimeScale": 2000.0,
+          "Multiplier": 1.05,
+          "PrintOnTick": false
+        }
+      },
+      {
+        "Nametag": "WaypointScatter",
+        "Source": "Local/Repos/aero-astro-STU3-Backend/STU3_WaypointScatter.py",
+        "Type": "Python",
+        "Active": true,
+        "Inst_Parameters": {
+          "LoopFreqHz": 1.0,
+          "NumWaypoints": [ "int32", 20 ],
+          "Seed": [ "int32", 0 ],
+          "ScatterFraction": 0.75,
+          "Planet": [ "EntityRef", "Mars" ],
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "LocalFrame": [ "EntityRef", "LocalFrame" ],
+          "Radius": 3396190.0,
+          "Datasets": [
+            "array",
+            "string",
+            "Mars/Global/Mars_HRSC_MOLA_BlendDEM_Global_200mp_v2",
+            "Mars/Local/KaiserCrater/DTEED_039245_1325_039944_1325_A01",
+            "Mars/Local/KaiserCrater/DTEEC_007110_1325_006820_1325_A01"
+          ],
+          "DatasetPriorities": [
+            "array",
+            "double",
+            0.0,
+            2.0,
+            1.0
+          ],
+          "WaypointScatterCenter": [ "doubleV3", 2193304.495153, 744524.73799, -2485377.959255 ],
+          "WaypointScatterCenterOld": [ "doubleV3", 2193436.304467, 745176.268355, -2485054.794719 ],
+          "WaypointScatterRadius": 1000.0,
+          "Visibility": true,
+          "AllVisible": true,
+          "VisibleIndices": [ "array", "int32", 1 ]
+        }
+      },
+      {
+        "Nametag": "RoverControl_Keyboard",
+        "Source": "Local/Repos/aero-astro-STU3-Backend/RoverControl_Keyboard.py",
+        "Type": "Python",
+        "Active": true,
+        "Inst_Parameters": {
+          "ControlledEntity": [ "EntityRef", "MarsBuggy" ],
+          "LoopFreqHz": 150.0
+        }
+      },
+      {
+        "Nametag": "SnapAssetToPlanet",
+        "Source": "SurfaceOperations/SnapAssetToPlanet/bin/SnapAssetToPlanet",
+        "Active": true,
+        "Type": "Normal",
+        "Frequency": 1.0,
+        "FreqType": "IRL",
+        "Inst_Parameters": {
+          "DoSlowGraphicsStuff": true,
+          "TraverseFrame": [ "EntityRef", "Mars" ],
+          "PlanetRadius_m": 3396190.0,
+          "LOD": 22,
+          "Datasets": [
+            "array",
+            "string",
+            "Mars/Global/Mars_HRSC_MOLA_BlendDEM_Global_200mp_v2",
+            "Mars/Local/KaiserCrater/DTEED_039245_1325_039944_1325_A01",
+            "Mars/Local/KaiserCrater/DTEEC_007110_1325_006820_1325_A01"
+          ],
+          "DatasetPriorities": [
+            "array",
+            "double",
+            0.0,
+            2.0,
+            1.0
+          ]
+        }
+      }
+    ],
+    "Taskflows": [
+    ]
+  },
+  "DataManager": {
+    "SimEntity": {
+      "Time": {
+        "UseCurrentTime": false,
+        "Timescale": 1.0,
+        "StartDateTAI": [ "timestamp", "2028-04-25T05:30:00.000000Z" ]
+      },
+      "GraphicsFrame": [ "EntityRef", "Mars" ],
+      "J2000Frame": [ "EntityRef", "SSB" ],
+      "Dynamics":{
+       "DefaultPropagatorFreqType": "IRL" 
+      }
+    },
+    "entities": [
+      {
+        "#Required": {
+          "Name": "Spectator_Flying",
+          "Type": "Pawn",
+          "Systems": []
+        },
+        "#Pawn": {
+          "BP_Path": "/Game/SpaceCraft_UI/FlatScreen/UIP2D_Spectator.UIP2D_Spectator_C",
+          "Role_Name": "Spectator (Flying)",
+          "Is_Possessed": false,
+          "Username": "(No User)",
+          "GraphicsFrame": [ "EntityRef", "Mars" ],
+          "Gadgets": {
+            "0": {
+              "Name": "Time",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/TimeManagement.TimeManagement'",
+              "IconTexture": "Texture2D'/Game/BuilderTools/WidgetImages/MainMenu/MSTV_MMIcon_Simulate.MSTV_MMIcon_Simulate'",
+              "StartsVisible": true,
+              "Slot": "TopLeft"
+            },
+            "1": {
+              "Name": "Camera",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/W_CameraControl_Physical.W_CameraControl_Physical'",
+              "IconTexture": "Texture2D'/Game/SpaceCraft_UI/FlatScreen/CameraIcon_white.CameraIcon_white'",
+              "StartsVisible": true,
+              "Slot": "TopRight"
+            }
+          }
+        },
+        "Dynamics": {
+          "PropagationType": "Clientside_PawnControl",
+          "Mass": 1,
+          "ResidentFrame": [ "EntityRef", "Mars" ]
+        },
+        "Graphics": {
+          "Scale": 1,
+          "RenderFar": true
+        },
+        "Location": [ "doubleV3", 2193154.759508, 743894.531595, -2485650.828582 ],
+        "Rotation": [ "doubleV4", 0.9180891513824462, 0.1514750272035599, 0.3614030480384826, 0.0596280097961426 ],
+        "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "TransitionGraphicsFrame": false,
+        "ConstrainZAxisToPlanet": true,
+        "NoClip": true
+      },
+      {
+        "#Required": {
+          "Name": "Spectator_Flatscreen",
+          "Type": "Pawn",
+          "Systems": []
+        },
+        "#Pawn": {
+          "BP_Path": "/Game/SpaceCraft_UI/FlatScreen/UIP2D_Orbit.UIP2D_Orbit_C",
+          "Role_Name": "Spectator (Third Person)",
+          "Is_Possessed": false,
+          "Username": "(No User)",
+          "GraphicsFrame": [ "EntityRef", "Mars" ],
+          "Gadgets": {
+            "0": {
+							"Name": "Time",
+							"Static": true,
+							"WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/TimeManagement.TimeManagement'",
+							"IconTexture": "Texture2D'/Game/BuilderTools/WidgetImages/MainMenu/MSTV_MMIcon_Simulate.MSTV_MMIcon_Simulate'",
+							"Slot": "TopLeft"
+						},
+						"1": {
+							"Name": "Camera",
+							"Static": true,
+							"WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/W_CameraControl_Physical.W_CameraControl_Physical'",
+							"IconTexture": "Texture2D'/Game/SpaceCraft_UI/FlatScreen/CameraIcon_white.CameraIcon_white'",
+							"Slot": "TopRight"
+						},
+            "2": {
+              "Name": "Status",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCRAFT_2_UI/InSim/Gadgets/STU/W_STU3_Display.W_STU3_Display'",
+              "IconTexture": "Texture2D'/Game/SpaceCraft_UI/Icons/GoogleMaterial/avg_time.avg_time'",
+              "StartsVisible": true,
+              "Slot": "Right",
+              "Params": {
+                "ElapsedDrivingTime": "",
+                "WaypointsReached": "0",
+                "AccelerationCommand": "0.0",
+                "SteeringCommand": "0.0",
+                "ReverseCommand": "0.0",
+                "BrakingCommand": "0.0"
+              }
+            }
+          }
+        },
+        "Dynamics": {
+          "Propagator": "Custom",
+          "Mass": 1,
+          "ResidentFrame": [ "EntityRef", "MarsBuggy" ]
+        },
+        "Graphics": {
+          "Scale": 1,
+          "RenderFar": true
+        },
+        "Location": [ "doubleV3", 0.0, 0.0, 1.25 ],
+        "Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+        "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AttachedToEntity": [ "EntityRef", "MarsBuggy" ],
+        "RotateToEntity": [ "EntityRef", "Mars" ],
+        "NoClip": true,
+        "StartingDistance_m": 4.0
+      },
+      {
+        "#Required": {
+          "Name": "Spectator_Offroad",
+          "Type": "Pawn",
+          "Systems": []
+        },
+        "#Pawn": {
+          "BP_Path": "/Game/SpaceCraft_UI/FlatScreen/UIP2DSeat_Spectator.UIP2DSeat_Spectator_C",
+          "BP_Path2": "/Game/StaticMeshes/Vehicles/Ground/Chaos/UIP2D_Driving.UIP2D_Driving_C",
+          "Role_Name": "Flatscreen Driving",
+          "Is_Possessed": false,
+          "Username": "(No User)",
+          "GraphicsFrame": [ "EntityRef", "Mars" ],
+          "Gadgets": {
+            "0": {
+              "Name": "Time",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/TimeManagement.TimeManagement'",
+              "IconTexture": "Texture2D'/Game/BuilderTools/WidgetImages/MainMenu/MSTV_MMIcon_Simulate.MSTV_MMIcon_Simulate'",
+              "Slot": "TopLeft"
+            },
+            "1": {
+              "Name": "Camera",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCraft_UI/FlatScreen/W_CameraControl_Physical.W_CameraControl_Physical'",
+              "IconTexture": "Texture2D'/Game/SpaceCraft_UI/FlatScreen/CameraIcon_white.CameraIcon_white'",
+              "Slot": "TopRight"
+            },
+            "2": {
+              "Name": "Status",
+              "Static": true,
+              "WidgetClass": "WidgetBlueprint'/Game/SpaceCRAFT_2_UI/InSim/Gadgets/STU/W_STU3_Display.W_STU3_Display'",
+              "IconTexture": "Texture2D'/Game/SpaceCraft_UI/Icons/GoogleMaterial/avg_time.avg_time'",
+              "StartsVisible": true,
+              "Slot": "Right",
+              "Params": {
+                "ElapsedDrivingTime": "",
+                "WaypointsReached": "0",
+                "AccelerationCommand": "0.0",
+                "SteeringCommand": "0.0",
+                "ReverseCommand": "0.0",
+                "BrakingCommand": "0.0"
+              }
+            }
+          }
+        },
+        "Dynamics": {
+          "Propagator": "Custom",
+          "Mass": 1,
+          "ResidentFrame": [ "EntityRef", "MarsBuggy" ]
+        },
+        "Graphics": {
+          "Scale": 1,
+          "RenderFar": true
+        },
+        "Location": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+        "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Seated": {
+          "AttachedToEntity": [ "EntityRef", "MarsBuggy" ],
+          "Seat_Loc": [ "doubleV3", 1.63854, 0.354907, 1.88547 ],
+          "Seat_Rot": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ]
+        },
+        "TransitionGraphicsFrame": false,
+        "ConstrainZAxisToPlanet": true,
+        "NoClip": true,
+        "GravityMagnitude": 3.73
+      },
+      {
+        "#Required": {
+          "Name": "MarsBuggy",
+          "Type": "Pawn",
+          "Systems": []
+        },
+        "#Pawn": {
+          "BP_Path": "/Game/VehicleTemplate/Blueprints/OffroadCar/FuturisticBuggy.FuturisticBuggy_C"
+        },
+        "Dynamics": {
+          "Propagator": "Unreal_Chaos",
+          "Mass": 100.0,
+          "ResidentFrame": [ "EntityRef", "Mars" ]
+        },
+        "ControlCmd": {
+          "RawButtons": ["array", "bool"],
+          "RawAxes": ["array", "double"],
+          "Accelerator": 0.0,
+          "SteerRight": 0.0,
+          "Brake": 0.0,
+          "Handbrake": false,
+          "Flip": false
+        },
+        "State": {
+          "IsAtWaypoint": false,
+          "ElapsedTimeWarpTime": 0.0,
+          "TimeWarpPhase": "None",
+          "TargetTimeWarpTime": 20000.0,
+          "WaypointNum": [ "int32", 0 ],
+          "HasReceivedFirstROSCommand": false
+        },
+        "Score": {
+          "TimeAtLastWaypoint": "N/A",
+          "ElapsedDrivingTime": "0.0",
+          "WaypointsReached": "0/20",
+          "DrivingTimeLimit_s": 3600.0
+        },
+        "Waypoints": {
+          "WaypointIDs": [ "array", "int32" ],
+          "VisitedWaypointIDs": [ "array", "int32" ],
+          "WaypointVisitTolerance_m": 5.0
+        },
+        "Location": [ "doubleV3", 2193076.135355, 743921.882251, -2485680.552095 ],
+        "LocationMarsFrame": [ "doubleV3", 2193076.135355, 743921.882251, -2485680.552095 ],
+        "LocationLocalFrame": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Rotation": [ "doubleV4", 0.9180891513824462, 0.1514750272035599, 0.3614030480384826, 0.0596280097961426 ],
+        "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "GravityMagnitude": 3.73,
+        "AngDamping": 0.001,
+        "DustColor": [ "doubleV3", 0.60, 0.24, 0.02 ],
+        "IsActive": true
+      },
+      {
+				"#Required": {
+					"Name": "BuggyCamera",
+					"Type": "Camera",
+					"Systems": []
+				},
+				"Dynamics": {
+					"Propagator": "Custom",
+					"Mass": 1.0,
+					"ResidentFrame": [ "EntityRef", "MarsBuggy" ]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+        "Location": [ "doubleV3", 3.35, 0.14, 1.5 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"FOV": 90.0,
+				"ResolutionX": [ "int32", 512 ],
+				"ResolutionY": [ "int32", 512 ],
+				"Exposure": 13.0,
+				"Ready": true
+			},
+      {
+        "#Required": {
+          "Name": "MarsLandingPad",
+          "Type": "BP",
+          "Systems": ["SnapAssetToPlanet"]
+        },
+        "#BP": {
+          "BP_Path": "/Game/StaticMeshes/StaticStructures/Misc/E_MarsLandingPad.E_MarsLandingPad_C"
+        },
+        "Dynamics": {
+          "Propagator": "Custom",
+          "Mass": 1,
+          "ResidentFrame": [ "EntityRef", "Mars" ]
+        },
+        "Graphics": {
+          "Scale": 1,
+          "RenderFar": true
+        },
+        "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Location": [ "doubleV3", 2193074.806624413, 743919.552017233, -2485678.234805387 ],
+				"Rotation": [ "doubleV4", 0.9073033241850813, 0.2141048379034549, 0.3614753429678826, 0.017186411355731818 ],
+        "Height": 0.0
+      },
+      {
+				"#Required": {
+					"Name": "GrayAlien",
+					"Systems": [ "SnapAssetToPlanet" ],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/Character/Alien/E_GrayAlien.E_GrayAlien_C"
+				},
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngJerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Dynamics": {
+					"Mass": 40.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Jerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Location": [ "doubleV3", 2193100.820528, 745239.108739, -2485331.036509 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Height": 0.0,
+        "AlignToSurfaceNormal": false
+			},
+      {
+				"#Required": {
+					"Name": "UFO",
+					"Systems": [ "SnapAssetToPlanet" ],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/Vehicles/Misc/E_UFO.E_UFO_C"
+				},
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngJerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Dynamics": {
+					"Mass": 700.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Jerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Location": [ "doubleV3", 2193094.609047, 745230.988576, -2485339.632768 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Height": 0.65,
+        "AlignToSurfaceNormal": true
+			},
+      {
+        "#Required": {
+					"Name": "HierarchicalRocksMedium",
+					"Systems": [],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/Nature/LunarRocks/Rocky_entity.Rocky_entity_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Jerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngJerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Seed": [ "int32", 0 ],
+        "NumRocks": [ "int32", 5000 ],
+        "LatitudeBounds": [ "doubleV2", -47.05, -46.97 ],
+        "LongitudeBounds": [ "doubleV2", 18.704, 18.796 ],
+        "Scale_min": 0.5,
+        "Scale_max": 2.0,
+        "Planet": [ "EntityRef", "Mars" ]
+      },
+      {
+        "#Required": {
+					"Name": "HierarchicalRocksSmall",
+					"Systems": [],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/Nature/LunarRocks/Rocky_entity.Rocky_entity_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Jerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngJerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Seed": [ "int32", 1 ],
+        "NumRocks": [ "int32", 20000 ],
+        "LatitudeBounds": [ "doubleV2", -47.05, -46.97 ],
+        "LongitudeBounds": [ "doubleV2", 18.704, 18.796 ],
+        "Scale_min": 0.15,
+        "Scale_max": 0.75,
+        "Planet": [ "EntityRef", "Mars" ]
+      },
+      {
+        "#Required": {
+					"Name": "HierarchicalRocksLarge",
+					"Systems": [],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/Nature/LunarRocks/Rocky_entity.Rocky_entity_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Jerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngJerk": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Seed": [ "int32", 2 ],
+        "NumRocks": [ "int32", 2000 ],
+        "LatitudeBounds": [ "doubleV2", -47.05, -46.97 ],
+        "LongitudeBounds": [ "doubleV2", 18.704, 18.796 ],
+        "Scale_min": 1.6,
+        "Scale_max": 5.0,
+        "Planet": [ "EntityRef", "Mars" ]
+      },
+      {
+        "#Required": {
+					"Name": "CommTower1",
+					"Systems": ["SnapAssetToPlanet"],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/StaticStructures/Communications/E_CommTower.E_CommTower_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 2193083.575971, 743916.75694, -2485671.74015 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Height": -0.15
+      },
+      {
+        "#Required": {
+					"Name": "HDU",
+					"Systems": ["SnapAssetToPlanet"],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/StaticStructures/Habitats/E_HDU.E_HDU_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 2193024.806624413, 743919.552017233, -2485678.234805387 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Height": 0.0
+      },
+      {
+        "#Required": {
+					"Name": "LanderPod",
+					"Systems": ["SnapAssetToPlanet"],
+					"Type": "BP"
+				},
+				"#BP": {
+					"BP_Path": "/Game/StaticMeshes/StaticStructures/Habitats/E_LanderPod.E_LanderPod_C"
+				},
+				"Dynamics": {
+					"Mass": 1.0,
+					"Propagator": "Custom",
+					"ResidentFrame": [
+						"EntityRef",
+						"Mars"
+					]
+				},
+				"Graphics": {
+					"RenderFar": true,
+					"Scale": 1.0
+				},
+				"Location": [ "doubleV3", 2193024.806624413, 743819.552017233, -2485678.234805387 ],
+				"Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"Rotation": [ "doubleV4", 0.0, 0.0, 0.0, 1.0 ],
+				"AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+				"AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+        "Height": 0.0
+      },
+      {
+        "#Required": {
+					"Name": "LocalFrame",
+					"Systems": [],
+					"Type": "FromTemplate"
+				},
+				"#FromTemplate": {
+					"Source_Path": "SharedData/SCAssets/Basic/Empty.enconf",
+          "ParamOverrides": {
+					  "NOTSource_Path": "SharedData/SCAssets/Basic/RightHandedFrame.enconf",
+            "Dynamics": {
+              "Mass": 1.0,
+              "Propagator": "Custom",
+              "ResidentFrame": [
+                "EntityRef",
+                "Mars"
+              ]
+            },
+            "Graphics": {
+              "RenderFar": true,
+              "Scale": 1.0
+            },
+            "Location": [ "doubleV3", 2193075.113333, 743921.623579, -2485679.376025 ],
+            "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Rotation": [ "doubleV4", -0.059628, 0.361403, -0.151475, 0.918089 ],
+            "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Height": 0.0
+          }
+				}
+      },
+      {
+        "#Required": {
+					"Name": "LocalFrame2",
+					"Systems": [],
+					"Type": "FromTemplate"
+				},
+				"#FromTemplate": {
+					"Source_Path": "SharedData/SCAssets/Basic/Empty.enconf",
+          "ParamOverrides": {
+					  "NOTSource_Path": "SharedData/SCAssets/Basic/RightHandedFrame.enconf",
+            "Dynamics": {
+              "Mass": 1.0,
+              "Propagator": "Custom",
+              "ResidentFrame": [
+                "EntityRef",
+                "Mars"
+              ]
+            },
+            "Graphics": {
+              "RenderFar": true,
+              "Scale": 1.0
+            },
+            "Location": [ "doubleV3", 2193075.758869, 743921.842554, -2485680.10769 ],
+            "Velocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Acceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Rotation": [ "doubleV4", 0.9180891513824462, 0.1514750272035599, 0.3614030480384826, 0.0596280097961426 ],
+            "AngVelocity": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "AngAcceleration": [ "doubleV3", 0.0, 0.0, 0.0 ],
+            "Height": 0.0
+          }
+				}
+      }
+    ]
+  },
+  "Templates": []
+}
