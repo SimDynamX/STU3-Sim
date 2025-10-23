@@ -119,11 +119,10 @@ radiusFromCenter: float = this.GetParam(st.VarType.double, "WaypointScatterRadiu
 WaypointLocations(seed, numWaypoints, scatterCenter, radiusFromCenter)
 
 
-# exit_flag = False
-# while not exit_flag:
-#     # Loop forever just so we don't crash the sim by leaving early
-#     dt_irl: float = 1.0 / st.GetThisSystem().GetParam(st.VarType.double, "LoopFreqHz")
-#     time.sleep(dt_irl)
+exit_flag = False
+while not exit_flag:
+    # Loop forever just so we don't (sometimes) crash the sim by leaving early
+    time.sleep(0.2)
 
 st.leave_sim()
 time.sleep(5.0) # Wait a bit so the messages send reliably before the socket closes

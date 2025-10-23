@@ -82,6 +82,13 @@ try:
 except Exception as e:
     st.logger_error(f"Error connecting to ROS: {str(e)}")
     st.OnScreenLogMessage("ROS_Comm failed to connect to ROS. Please restart the sim after ROSBridge is running.", "ROS_Comm", st.Severity.Error)
+    
+    exit_flag = False
+    while not exit_flag:
+        # Loop forever just so we don't (sometimes) crash the sim by leaving early
+        time.sleep(0.2)
+    
+    
     st.leave_sim()
     time.sleep(0.5) # Wait a bit so the messages send reliably before the socket closes
     exit(1)
