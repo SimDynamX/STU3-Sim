@@ -527,9 +527,6 @@ publisher.setup_depth_camera(depth_config)
 exit_flag = False
 frame_rate = this.GetParam(st.VarType.double, "LoopFreqHz")
 
-RGB_period = 1.0/this.GetParam(st.VarType.double, "RGB_FreqHz")
-Depth_period = 1.0/this.GetParam(st.VarType.double, "Depth_FreqHz")
-
 RGB_timer = 0.0
 Depth_timer = 0.0
 
@@ -541,12 +538,17 @@ while not exit_flag:
     RGB_timer += dt
     Depth_timer += dt
 
+    RGB_period = 1.0/camera.GetParam(st.VarType.double, "RGB_FreqHz")
+    Depth_period = 1.0/camera.GetParam(st.VarType.double, "Depth_FreqHz")
+    
     if(RGB_timer >= RGB_period):
+        # st.OnScreenLogMessage(f"RGB cmd freq: {camera.GetParam(st.VarType.double, 'RGB_FreqHz')}, Depth cmd freq: {camera.GetParam(st.VarType.double, 'Depth_FreqHz')}", "CamTest", st.Severity.Info)
         RGB_timer = 0.0
         capture_id = capture_image(camera)
         st.camera.OnImageReceived(capture_id, lambda capturedImage: imageReceived(capturedImage))
 
     if(Depth_timer >= Depth_period):
+        # st.OnScreenLogMessage(f"RGB cmd freq: {camera.GetParam(st.VarType.double, 'RGB_FreqHz')}, Depth cmd freq: {camera.GetParam(st.VarType.double, 'Depth_FreqHz')}", "CamTest", st.Severity.Info)
         Depth_timer = 0.0
         capture_id = capture_image_depth(camera)
         st.camera.OnImageReceived(capture_id, lambda capturedImage: imageReceived(capturedImage))

@@ -45,8 +45,6 @@
 				"Inst_Parameters": {
 					"Camera": [ "EntityRef", "BuggyCamera" ],
           "LoopFreqHz": 15.0,
-          "RGB_FreqHz": 15.0,
-          "Depth_FreqHz": 5.0,
           "Filename": [ "string", "DEFAULT_IMAGES_DIR" ]
 				}
       },
@@ -397,6 +395,8 @@
 				"ResolutionX": [ "int32", 512 ],
 				"ResolutionY": [ "int32", 512 ],
 				"Exposure": 13.0,
+				"RGB_FreqHz": 15.0,
+				"Depth_FreqHz": 5.0,
 				"Ready": true
 			},
       {

@@ -124,7 +124,7 @@ def handle_steer_request(request, response):
         response['success'] = True
         return True
     except Exception as e:
-        st.logger_error(f"Error handling Steer request: {str(e)}")
+        st.logger_fatal(f"Error handling Steer request: {str(e)}")
         response['success'] = False
         return False
 steer_service.advertise(handle_steer_request)
@@ -143,7 +143,7 @@ def handle_accelerator_request(request, response):
         response['success'] = True
         return True
     except Exception as e:
-        st.logger_error(f"Error handling Accelerator request: {str(e)}")
+        st.logger_fatal(f"Error handling Accelerator request: {str(e)}")
         response['success'] = False
         return False
 Accelerator_service.advertise(handle_accelerator_request)
@@ -162,7 +162,7 @@ def handle_reverse_request(request, response):
         response['success'] = True
         return True
     except Exception as e:
-        st.logger_error(f"Error handling Reverse request: {str(e)}")
+        st.logger_fatal(f"Error handling Reverse request: {str(e)}")
         response['success'] = False
         return False
 Reverse_service.advertise(handle_reverse_request)
@@ -181,7 +181,7 @@ def handle_brake_request(request, response):
         response['success'] = True
         return True
     except Exception as e:
-        st.logger_error(f"Error handling Brake request: {str(e)}")
+        st.logger_fatal(f"Error handling Brake request: {str(e)}")
         response['success'] = False
         return False
 Brake_service.advertise(handle_brake_request)
@@ -203,7 +203,7 @@ def handle_core_sample_request(request, response):
         response['success'] = True
         return True
     except Exception as e:
-        st.logger_error(f"Error handling CoreSample request: {str(e)}")
+        st.logger_fatal(f"Error handling CoreSample request: {str(e)}")
         response['success'] = False
         return False
 CoreSample_service.advertise(handle_core_sample_request)
@@ -217,7 +217,7 @@ def publish_coreSamplingComplete(payload: st.ParamMap, time: st.timestamp):
     try:
         coreSamplingComplete_publisher.publish(coreSamplingComplete_msg)
     except Exception as e:
-        st.logger_error(f"Error publishing CoreSamplingComplete to ROS: {str(e)}")
+        st.logger_fatal(f"Error publishing CoreSamplingComplete to ROS: {str(e)}")
 
 st.SimGlobals.AddEventListener("EndTimeWarp", publish_coreSamplingComplete)
 
@@ -265,11 +265,51 @@ def handle_change_exposure_request(request, response):
         st.logger_info(f"Camera exposure set to {camera.GetParam(st.VarType.double, 'Exposure')}")
         return True
     except Exception as e:
-        st.logger_error(f"Error handling ChangeExposure request: {str(e)}")
+        st.logger_fatal(f"Error handling ChangeExposure request: {str(e)}")
         response['success'] = False
         return False
 
 ChangeExposure_service.advertise(handle_change_exposure_request)
+
+# change cam freq service
+max_freq_rgb = 15.0
+ChangeRGBFreq_service = roslibpy.Service(ros, '/ChangeRGBFreq', 'space_teams_definitions/Float')
+def handle_change_rgb_freq_request(request, response):
+    try:
+        rgb_freq_value = request['data']
+        clamped_rgb_freq = max(0.01, min(rgb_freq_value, max_freq_rgb))
+        camera.SetParam(st.VarType.double, "RGB_FreqHz", clamped_rgb_freq)
+        
+        response['success'] = True
+
+        st.logger_info(f"RGB Camera frequency set to {camera.GetParam(st.VarType.double, 'RGB_FreqHz')}")
+        return True
+    except Exception as e:
+        st.logger_fatal(f"Error handling ChangeRGBFreq request: {str(e)}")
+        response['success'] = False
+        return False
+    
+ChangeRGBFreq_service.advertise(handle_change_rgb_freq_request)
+
+# change depth freq service
+max_freq_depth = 5.0
+ChangeDepthFreq_service = roslibpy.Service(ros, '/ChangeDepthFreq', 'space_teams_definitions/Float')
+def handle_change_depth_freq_request(request, response):
+    try:
+        depth_freq_value = request['data']
+        clamped_depth_freq = max(0.01, min(depth_freq_value, max_freq_depth))
+        camera.SetParam(st.VarType.double, "Depth_FreqHz", clamped_depth_freq)
+
+        response['success'] = True
+
+        st.logger_info(f"Depth Camera frequency set to {camera.GetParam(st.VarType.double, 'Depth_FreqHz')}")
+        return True
+    except Exception as e:
+        st.logger_fatal(f"Error handling ChangeDepthFreq request: {str(e)}")
+        response['success'] = False
+        return False
+
+ChangeDepthFreq_service.advertise(handle_change_depth_freq_request)
 
 exit_flag = False
 while not exit_flag:
