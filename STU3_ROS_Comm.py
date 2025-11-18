@@ -271,6 +271,46 @@ def handle_change_exposure_request(request, response):
 
 ChangeExposure_service.advertise(handle_change_exposure_request)
 
+# change cam freq service
+max_freq_rgb = 15.0
+ChangeRGBFreq_service = roslibpy.Service(ros, '/ChangeRGBFreq', 'space_teams_definitions/Float')
+def handle_change_rgb_freq_request(request, response):
+    try:
+        rgb_freq_value = request['data']
+        clamped_rgb_freq = max(0.01, min(rgb_freq_value, max_freq_rgb))
+        camera.SetParam(st.VarType.double, "RGB_FreqHz", clamped_rgb_freq)
+        
+        response['success'] = True
+
+        st.logger_info(f"RGB Camera frequency set to {camera.GetParam(st.VarType.double, 'RGB_FreqHz')}")
+        return True
+    except Exception as e:
+        st.logger_fatal(f"Error handling ChangeRGBFreq request: {str(e)}")
+        response['success'] = False
+        return False
+    
+ChangeRGBFreq_service.advertise(handle_change_rgb_freq_request)
+
+# change depth freq service
+max_freq_depth = 5.0
+ChangeDepthFreq_service = roslibpy.Service(ros, '/ChangeDepthFreq', 'space_teams_definitions/Float')
+def handle_change_depth_freq_request(request, response):
+    try:
+        depth_freq_value = request['data']
+        clamped_depth_freq = max(0.01, min(depth_freq_value, max_freq_depth))
+        camera.SetParam(st.VarType.double, "Depth_FreqHz", clamped_depth_freq)
+
+        response['success'] = True
+
+        st.logger_info(f"Depth Camera frequency set to {camera.GetParam(st.VarType.double, 'Depth_FreqHz')}")
+        return True
+    except Exception as e:
+        st.logger_fatal(f"Error handling ChangeDepthFreq request: {str(e)}")
+        response['success'] = False
+        return False
+
+ChangeDepthFreq_service.advertise(handle_change_depth_freq_request)
+
 exit_flag = False
 while not exit_flag:
     time.sleep(1.0 / st.GetThisSystem().GetParam(st.VarType.double, "LoopFreqHz"))
